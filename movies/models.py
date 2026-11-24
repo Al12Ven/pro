@@ -16,9 +16,12 @@ class Movie(models.Model):
     description = models.TextField(verbose_name="Описание")
     year = models.IntegerField(verbose_name="Год выпуска")
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True, verbose_name="Жанр")
-    # Используем URLField для постера, чтобы не мучиться с загрузкой файлов
-    poster = models.URLField(verbose_name="Ссылка на постер", help_text="Вставь ссылку на картинку")
+    
+   
+    poster = models.ImageField(upload_to='posters/', verbose_name="Постер фильма")
+    
     created_at = models.DateTimeField(auto_now_add=True)
+   
 
     class Meta:
         verbose_name = "Фильм"
@@ -29,7 +32,7 @@ class Movie(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('movie_detail', kwargs={'pk': self.pk})
+        return reverse('detail', kwargs={'pk': self.pk})
 
     def get_average_rating(self):
         """Считает средний рейтинг из отзывов"""

@@ -1,63 +1,98 @@
 {% extends 'movies/base.html' %}
+{% load static %}
 {% block title %}{{ movie.title }}{% endblock %}
 
 {% block content %}
-<!-- Информация о фильме -->
-<div class="row mb-5">
 
-    <div class="col-md-8">
-        <h1 class="fw-bold mb-3">{{ movie.title }}</h1>
-        <div class="d-flex gap-3 mb-4 text-muted flex-wrap">
+<!-- Сообщения об успехе или ошибке -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- HERO-БЛОК: Постер + Информация о фильме -->
+<div class="movie-hero mb-5">
+    <img src="{{ movie.poster.url }}" 
+         alt="{{ movie.title }}" 
+         class="movie-hero-poster">
+    
+    <div class="movie-hero-info">
+        <h1>{{ movie.title }}</h1>
+        
+        <div class="movie-hero-meta">
             <span>📅 {{ movie.year }}</span>
             <span>🎭 {{ movie.genre }}</span>
-            <span class="rating-badge fs-5">⭐ {{ avg_rating }}</span>
+            <span class="rating-badge">⭐ {{ avg_rating }}</span>
+            <span>💬 {{ reviews.count }} отзыв(ов)</span>
         </div>
-        <p class="fs-5" style="line-height: 1.6;">{{ movie.description }}</p>
+        
+        <p class="movie-hero-description">{{ movie.description }}</p>
+        
+        <a href="{% url 'list' %}" class="btn btn-outline-light">
+            ← Вернуться к списку
+        </a>
     </div>
 </div>
 
 <hr class="border-secondary my-5">
 
-<!-- Отзывы -->
-<h3 class="section-title">💬 Отзывы зрителей</h3>
-
+<!-- СЕКЦИЯ ОТЗЫВОВ И ФОРМЫ -->
 <div class="row">
+    <!-- Левая колонка: Список отзывов -->
     <div class="col-md-7">
+        <h3 class="section-title">💬 Отзывы зрителей</h3>
+        
         {% for review in reviews %}
             <div class="review-card">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h5 class="mb-0 fw-bold">{{ review.author }}</h5>
                     <span class="rating-badge">{{ review.score }}/10</span>
                 </div>
-                <p class="mb-0 text-light">{{ review.text }}</p>
+                <p class="mb-2 text-light">{{ review.text }}</p>
                 <small class="text-muted">{{ review.created_at|date:"d.m.Y H:i" }}</small>
             </div>
         {% empty %}
-            <p class="text-muted">Отзывов пока нет. Будьте первым!</p>
+            <div class="text-center py-5 text-muted">
+                <h5>📝 Отзывов пока нет</h5>
+                <p>Будьте первым, кто оставит отзыв об этом фильме!</p>
+            </div>
         {% endfor %}
     </div>
 
-    <!-- Форма добавления отзыва -->
+    <!-- Правая колонка: Форма добавления отзыва -->
     <div class="col-md-5">
-        <div class="p-4 rounded-3" style="background-color: #1f1f1f;">
+        <div class="p-4 rounded-3" style="background-color: #1f1f1f; border: 1px solid #333;">
             <h4 class="mb-3 fw-bold">✍️ Оставить отзыв</h4>
-            <form method="post" action="{% url 'add_review' movie.pk %}">
+            <p class="text-muted small mb-4">Вы пишете отзыв о фильме: <strong class="text-white">{{ movie.title }}</strong></p>
+            
+            <form method="post">
                 {% csrf_token %}
+                
                 <div class="mb-3">
-                    <label class="form-label">Ваше имя</label>
+                    <label class="form-label fw-semibold">Ваше имя</label>
                     {{ form.author }}
                 </div>
+                
                 <div class="mb-3">
-                    <label class="form-label">Оценка (1-10)</label>
+                    <label class="form-label fw-semibold">Оценка (1-10)</label>
                     {{ form.score }}
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Текст отзыва</label>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Текст отзыва</label>
                     {{ form.text }}
                 </div>
-                <button type="submit" class="btn btn-primary w-100 py-2">Отправить отзыв</button>
+                
+                <button type="submit" class="btn btn-primary w-100 py-2">
+                    🚀 Отправить отзыв
+                </button>
             </form>
         </div>
     </div>
 </div>
+
 {% endblock %}
