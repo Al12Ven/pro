@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineBase - {% block title %}{% endblock %}</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Наш локальный CSS -->
+    <link href="{% static 'movies/css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar navbar-dark py-3">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'list' %}">
+                <!-- Можно использовать локальный логотип: -->
+                <!-- <img src="{% static 'movies/images/logo.png' %}" alt="Logo" height="35"> -->
+                🎬 CineBase
+            </a>
+            <span class="text-muted small">Каталог фильмов</span>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container py-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Футер -->
+    <footer class="text-center py-4 mt-5" style="border-top: 1px solid #333; color: #666;">
+        <small>© 2026 CineBase. Учебный проект на Django.</small>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
